@@ -4,14 +4,9 @@ const express = require('express');
 // inicia express
 const app = express();
 
-const mongoose = require('mongoose'); 
+ 
 // ele irá modelar a nossa base de dados
-mongoose.connect(process.env.CONNECTION)
-    .then(()=>{
-        console.log('Conectei à base de dados');
-        app.emit('pronto');
-    })
-    .catch(e => {console.log(e)});
+
 
 //ira mandar cookies
 const session = require('express-session');
