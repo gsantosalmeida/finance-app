@@ -22,5 +22,6 @@ const sessionOptions = session({
 });
 
 const routes = require('./src/routes/authRoutes');
+app.use(routes);
 
 module.exports = app;
