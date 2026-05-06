@@ -1,6 +1,7 @@
 //importar express
 const express = require('express'); 
 const path = require('path');
+const {middlewareGlobal} = require('./src/middlewares/authMiddlewares');
 // inicia express
 const app = express();
 // configurar view e definir como EJS
@@ -13,6 +14,7 @@ app.use(express.static(path.resolve(__dirname, 'public')));
 app.use(express.urlencoded({extended: true}));
 // lê dados de JSON
 app.use(express.json());
+app.use(middlewareGlobal());
 // importar session
 const session = require('express-session');
 // configurar a session

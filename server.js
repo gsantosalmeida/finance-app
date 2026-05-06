@@ -1,8 +1,8 @@
-require('dotenv').config(); 
+require('dotenv').config() ;
 const app = require('./app');
 const connectDB = require('./src/config/database');
 
-connectDB();
+await connectDB();
 
 app.listen(3000, () => {
     console.log('Acessar http://localhost:3000');

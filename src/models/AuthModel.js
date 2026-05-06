@@ -8,30 +8,9 @@ const UserSchema = new mongoose.Schema({
     password: { type: String, required: true }
 }, { timestamps: true });
 
-// Middleware pre-save
-UserSchema.pre('save', async function (next) {
-    // Verifica se a senha foi modificada ou se é um novo documento
-    if (!this.isModified('password')) {
-        return next();
-    }
+const LoginModel = mongoose.model('Login', UserSchema);
 
-    try {
-        // Gera salt e faz o hash da senha
-        const salt = await bcrypt.genSalt(10);
-        this.password = await bcrypt.hash(this.password, salt);
-        next();
-    } catch (error) {
-        next(error);
-    }
-});
-
-// Método para comparar senhas
-UserSchema.methods.comparePassword = async function (candidatePassword) {
-    return bcrypt.compare(candidatePassword, this.password);
-};
-
-const UserModel = mongoose.model('User', UserSchema);
-class User {
+class Login {
     constructor(body) {
         this.body = body;
         this.errors = [];
@@ -41,7 +20,7 @@ class User {
     async signin() {
         this.valid();
         if (this.errors.length > 0) return;
-        this.user = await UserModel.findOne({ email: this.body.email });
+        this.user = await LoginModel.findOne({ email: this.body.email });
 
         if (!this.user) {
             this.errors.push('Usuário não existe.');
@@ -59,10 +38,18 @@ class User {
         this.valid();
         if (this.errors.length > 0) return;
         await this.userExist();
+        if (this.errors.length > 0) return;
+        const salt = bcryptjs.genSaltSync();
+        this.body.password = bcryptjs.hashSync(this.body.password, salt);
+        try {
+            this.user = await LoginModel.create(this.body);
+        } catch (e) {
+            console.log(e);
+        }
     }
 
     async userExist() {
-        this.user = await UserModel.findOne({ email: this.body.email });
+        this.user = await LoginModel.findOne({ email: this.body.email });
         if (this.user) this.errors.push('Usuário já existe!');
     }
     valid() {
@@ -85,4 +72,4 @@ class User {
 
 }
 
-module.exports = User;
+module.exports = Login;
