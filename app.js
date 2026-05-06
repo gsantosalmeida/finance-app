@@ -1,5 +1,6 @@
 //importar express
 const express = require('express'); 
+const path = require('path');
 // inicia express
 const app = express();
 // configurar view e definir como EJS
